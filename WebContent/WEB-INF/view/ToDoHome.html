@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ToDoHome</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}" />
+<script type="text/javascript" src="static/js/jquery-1.12.1.min.js"	th:src="@{/static/js/jquery-1.12.1.min.js}"></script>
+<script type="text/javascript" src="static/js/bootstrap.min.js"	th:src="@{/static/js/bootstrap.min.js}"></script>
+<script type="text/javascript" src="static/js/todoHome.js"	th:src="@{/static/js/todoHome.js}"></script>
+</head>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">ToDo Manager Application</a>
+		</div>
+	</div>
+</nav>
+
+<div class="jumbotron">
+	<div class="container">
+		<h1><font size="70px" >WelCome to ToDo Manager Application.</font></h1>
+	</div>
+</div>
+
+<div id="mainContainer" class="container">
+
+	<div class="row">
+		<div class="col-md-4">
+			<h3><font color="#5CB8E7" size="25px" >My ToDo List</font></h3>
+		</div>
+	</div>
+
+	<div th:if="${#lists.isEmpty(lstDetailsDTO)}">
+		<div class="row">
+			<div class="col-md-4">
+				<p><b><font color="#5CB864" size="4px">Sorry!!! You don't have any ToDo List</font></b></p>
+			</div>
+		</div>
+	</div>
+
+		<div class="row">
+			<div class="col-md-4">
+				<p></p>
+			</div>
+		</div>
+
+
+	<div th:if="!${#lists.isEmpty(lstDetailsDTO)}">
+		<div class="row" th:each="todoList:${lstDetailsDTO}">
+			<div class="col-md-4">
+				<!-- <a th:id="'testID' + *{todoListStat.index}" th:text="*{todoList.todoName}" th:href="'#EditTodoList' + *{todoListStat.index}" data-toggle="modal"  role="button" ></a> -->
+
+
+				<a th:id="*{todoList.todoID}" th:text="*{todoList.todoName}" onclick="displayEditForm(this);" data-toggle="modal" role="button"></a>
+
+				<!-- <a th:id="'testID' + *{todoListStat.index}" th:text="*{todoList.todoName}" onclick="display(this);" data-toggle="modal"  role="button" ></a> -->
+				<div class="not-display">
+					<div class="modal fade" th:id="'EditTodoList' + *{todoList.todoID}"
+						tabindex="-1" role="dialog" aria-labelledby="helpModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">
+										<span aria-hidden="true">&times; </span><span class="sr-only">
+											Close</span>
+									</button>
+									<h4 class="modal-title" id="EditMyLabel">Edit ToDo List</h4>
+								</div>
+								<div class="modal-body">
+
+									<!-- <form id="formCreateNewList" th:object="${objDetailsDTO}" > -->
+									<div class="input-group">
+										<input th:id="'EditTodoName' + *{todoList.todoID}" type="text"
+											class="form-control" placeholder="List Name"
+											th:value="${todoList.todoName}" />
+									</div>
+									<p></p>
+									<div class="input-group">
+										<textarea th:id="'EditTodoDescription' + *{todoList.todoID}"
+											rows="4" cols="50" class="form-control"
+											placeholder="List Description"
+											th:text="*{todoList.description}"></textarea>
+									</div>
+									<p></p>
+
+
+								</div>
+								<div class="modal-footer">
+									<input type="button" class="btn btn-success"
+										onclick="updateToDo(this);" value="Update"
+										th:id="*{todoList.todoID}"></input> <input type="button"
+										class="btn btn-success" onclick="deleteToDo(this);"
+										value="Delete" th:id="*{todoList.todoID}"></input> <input
+										type="button" class="btn" onclick="#" value="Cancel"
+										data-dismiss="modal"></input>
+
+								</div>
+
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>
+		
+				<div class="row">
+			<div class="col-md-4">
+				<p></p>
+			</div>
+		</div>
+		
+	</div>
+
+
+
+
+	<b></b>
+	<div class="row">
+		<div class="col-md-4">
+			<p>
+				<a class="btn btn-success" href="#createTodoList"
+					data-toggle="modal" role="button"> CREATE NEW LIST </a>
+			</p>
+		</div>
+	</div>
+
+
+	<!--  Post construct -->
+
+	<div class="modal fade" id="createTodoList" tabindex="-1" role="dialog"
+		aria-labelledby="helpModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times; </span><span class="sr-only">
+							Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Create New List</h4>
+				</div>
+				<div class="modal-body">
+
+					<!-- <form id="formCreateNewList" th:object="${objDetailsDTO}" > -->
+					<div class="input-group">
+						<input id="todoName" type="text" class="form-control"
+							placeholder="List Name" th:value="${objDetailsDTO.todoName}" />
+					</div>
+					<p></p>
+					<div class="input-group">
+						<textarea id="todoDescription" rows="4" cols="50"
+							class="form-control" placeholder="List Description"
+							th:value="${objDetailsDTO.description}"></textarea>
+					</div>
+					<p></p>
+
+
+					<!-- </form> -->
+				</div>
+				<div class="modal-footer">
+					<input class="btn btn-success" type="submit" value="Send!"
+						id="submit"></input> 
+						<input type="button" class="btn" onclick="#" value="Cancel" data-dismiss="modal"></input>
+						<!-- <a href="#" class="btn" data-dismiss="modal">Cancel</a> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+<!-- 	<hr></hr>
+	<footer>
+		<p>rmudenur - ToDo Manager - Development</p>
+	</footer> -->
+
+<nav class="navbar navbar-inverse navbar-fixed-bottom">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">rmudenur - Todo Manager APplication</a>
+		</div>
+	</div>
+</nav>
+
+
+</html>
